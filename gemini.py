@@ -5,6 +5,7 @@ from google import genai
 from google.genai import types
 import pandas as pd
 
+
 def fix_missing_characters(definitions: List[Dict[Any, Any]]):
     client = genai.Client()
 
@@ -20,20 +21,19 @@ def fix_missing_characters(definitions: List[Dict[Any, Any]]):
     {json.dumps(definitions)}
     """
     response = client.models.generate_content(
-                                           model='gemini-2.5-flash',
-                                           contents=prompt,
-                                           config=types.GenerateContentConfig(
-                                               thinking_config=types.ThinkingConfig(
-                                                   thinking_budget=0),
-                                            response_mime_type='application/json',
-                                            response_json_schema=BatchFormattedDefinitions.model_json_schema()
-                                           ),
+        model='gemini-2.5-flash',
+        contents=prompt,
+        config=types.GenerateContentConfig(
+            thinking_config=types.ThinkingConfig(
+                thinking_budget=0),
+            response_mime_type='application/json',
+            response_json_schema=BatchFormattedDefinitions.model_json_schema()
+        ),
 
-                                        )
-    
+    )
 
     if not response.text:
-        raise ValueError("No response from gemini")    
+        raise ValueError("No response from gemini")
 
     return BatchFormattedDefinitions.model_validate_json(response.text.strip()).model_dump()['formatted_results']
 
@@ -58,20 +58,17 @@ def translate_definitions_spanish(definitions: List[Dict[Any, Any]]):
     """
 
     response = client.models.generate_content(
-                                           model='gemini-2.5-flash',
-                                           contents=prompt,
-                                           config=types.GenerateContentConfig(
-                                               thinking_config=types.ThinkingConfig(
-                                                   thinking_budget=0),
-                                            response_mime_type='application/json',
-                                            response_json_schema=BatchSpanishDefinitions.model_json_schema()
-                                           ),
+        model='gemini-2.5-pro',
+        contents=prompt,
+        config=types.GenerateContentConfig(
+            response_mime_type='application/json',
+            response_json_schema=BatchSpanishDefinitions.model_json_schema()
+        ),
 
 
-                                        )
-    
+    )
 
     if not response.text:
-        raise ValueError("No response from gemini")    
+        raise ValueError("No response from gemini")
 
     return BatchSpanishDefinitions.model_validate_json(response.text.strip()).model_dump()['result']
