@@ -19,7 +19,17 @@ class HskEntry(BaseModel):
         ..., 
         description="The definition or translation of the word."
     )
+
+class SpanishDefinition(BaseModel):
+    character_ID: int = Field(..., description="The id of the word (characters) it is defining")
+    definition: str = Field(
+        ...,
+        description="The definition in spanish or translation of the word."
+    )
     
+class BatchSpanishDefinitions(BaseModel):
+    result: List[SpanishDefinition] = Field(..., description="A list of spanish definitions for chinese characters")
+
 class BatchFormattedDefinitions(BaseModel):
     formatted_results: List[HskEntry] = Field(
         ..., 
